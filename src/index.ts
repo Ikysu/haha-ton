@@ -3,6 +3,30 @@ import { Sequelize } from 'sequelize';
 import Fastify from "fastify";
 import fastifySocket from 'fastify-socket.io'
 import fastifyCors from "@fastify/cors";
+import { Expo } from 'expo-server-sdk';
+
+let expo = new Expo();
+
+type pushMessage = {
+    to: string | string [],
+    body: string,
+    title: string
+    data: object,
+}
+
+async function sendPush(message:pushMessage) {
+    try {
+        await expo.sendPushNotificationsAsync([message]);
+        return true;
+    } catch (error) {
+        console.log(`[PUSH] ${error}`);
+        return false;
+    }
+}
+
+
+
+
 
 const settings = JSON.parse(readFileSync("settings.json", "utf-8"));
 
@@ -33,13 +57,18 @@ readdirSync("./src/database").forEach(async model=>{
 // Fastify
 
 const fastify = Fastify({
-    logger:true
+    logger:false
 });
 
-fastify.register(fastifySocket)
+fastify.register(fastifySocket, {
+    cors: {
+        origin: "*",
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    },
+})
 fastify.register(fastifyCors, {
-    origin: "*",
-    methods:["GET", "POST", "PUT", "DELETE"]
+    origin:"*",
+    methods:["GET", "POST", "PUT", "PATCH", "DELETE"],
 })
 
 readdirSync("./src/routers").forEach(route=>{

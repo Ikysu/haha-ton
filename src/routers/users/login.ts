@@ -17,7 +17,10 @@ export default async function get (req: Req, reply: FastifyReply, db: Sequelize)
     })
 
     if(await userGet.init()){
-        reply.send({ok:true, data:userGet.getProfile()})
+        reply.send({ok:true, data:{
+            ...userGet.getProfile(),
+            avatar:"https://web.damirlut.online/pchel.png"
+        }})
     }else{
         reply.send({ok:false, error:"Bad user"})
     }
