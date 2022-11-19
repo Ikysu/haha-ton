@@ -21,6 +21,7 @@ export type UserObject = UserProfile & {
 
 export interface IUser extends UserObject {
     db: Sequelize;
+    push_token: string;
     init(): Promise<boolean>;
 }
 

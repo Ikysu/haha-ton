@@ -6,6 +6,7 @@ type Req = FastifyRequest<{
     Querystring: {
         token:string;
         name:string;
+        push_token:string;
     }
 }>
 
@@ -13,7 +14,8 @@ export default async function get (req: Req, reply: FastifyReply, db: Sequelize)
     let userGet = new UserCreate({
         db,
         token:req.query.token,
-        name:req.query.name
+        name:req.query.name,
+        push_token:req.query.push_token
     })
 
     if(await userGet.init()){

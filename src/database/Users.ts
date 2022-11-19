@@ -28,6 +28,9 @@ export default (s:Sequelize,modelName:string)=>s.define(modelName,{
     },
     longitude:{
         type: DataTypes.FLOAT
+    },
+    push_token:{
+        type: DataTypes.STRING
     }
 }, {
     

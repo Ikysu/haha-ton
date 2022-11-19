@@ -17,6 +17,7 @@ class User implements IUser {
     token!: string;
     name!: string;
     rating!: number;
+    push_token!: string;
 
     model!: Model;
     
@@ -60,6 +61,7 @@ export class UserCreate extends User {
         super(data.db);
         this.token=data.token;
         this.name=data.name;
+        this.push_token=data.push_token
     }
     async init() {
         let { Users } = this.db.models;

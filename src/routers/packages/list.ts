@@ -1,9 +1,8 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Sequelize } from "sequelize";
-import { PackageGet } from ".";
 
 
-export default async function get (req: FastifyRequest, reply: FastifyReply, db: Sequelize) {
+export default async function (req: FastifyRequest, reply: FastifyReply, db: Sequelize) {
 
 
     // TODO: Отправлять лишь близжайшие посылки (сейчас отправляются все)
