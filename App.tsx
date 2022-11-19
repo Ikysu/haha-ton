@@ -8,11 +8,14 @@ import Navigation from './navigation';
 import * as Crypto from 'expo-crypto';
 import { osBuildFingerprint } from 'expo-device';
 import React from 'react';
-import { API } from './lib/api.service';
+import { API, UserService } from './lib/api.service';
 import { RecoilRoot } from 'recoil';
-import RecoilNexus from 'recoil-nexus';
+import RecoilNexus, { setRecoil } from 'recoil-nexus';
 
 import * as Notifications from 'expo-notifications';
+import * as Location from 'expo-location';
+
+import { GeoAtom } from './store/geo.atom';
 
 Notifications.setNotificationHandler({
   handleNotification: async () => ({
@@ -37,7 +40,22 @@ export default function App() {
       API.login(token, 'DamirLut');
     };
 
+    const updateGeo = async () => {
+      let location = await Location.getCurrentPositionAsync({});
+      setRecoil(GeoAtom, {
+        longitude: location.coords.longitude || 0,
+        latitude: location.coords.latitude || 0,
+      });
+
+      UserService.updateGeo(location.coords.longitude, location.coords.latitude);
+    };
     login();
+
+    const interval = setInterval(updateGeo, 5000);
+
+    return () => {
+      clearInterval(interval);
+    };
   }, []);
 
   if (!isLoadingComplete) {

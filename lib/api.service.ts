@@ -1,22 +1,48 @@
 import axios, { AxiosRequestConfig } from 'axios';
 import { setRecoil } from 'recoil-nexus';
 import { ProfileAtom } from '../store/profile.atom';
-import { ServerResponse, UserProfile } from './types';
+import { CreatePackageBody, PackageObject, ServerResponse, UserProfile } from './types';
 
 export class UserService {
-  static async get(uid: string) {
-    const data = await API.request<UserProfile>('users/get', {
+  static get(uid: string) {
+    return API.request<UserProfile>('users/get', {
       params: { uid },
       method: 'GET',
     });
-    return data;
   }
 
-  static async updateGeo(latitude: number, longitude: number) {
-    const data = await API.request<UserProfile>('users/updateGeo', {
+  static updateGeo(latitude: number, longitude: number) {
+    return API.request<UserProfile>('users/updateGeo', {
       data: { latitude, longitude },
     });
-    return data;
+  }
+}
+
+export class PackageService {
+  static get(package_uid: string) {
+    return API.request<PackageObject>('packages/get', {
+      params: { uid: package_uid },
+    });
+  }
+
+  static create(params: CreatePackageBody) {
+    return API.request<PackageObject>('packages/create', {
+      params,
+    });
+  }
+
+  static map() {
+    return API.request<PackageObject[]>('packages/map', {});
+  }
+
+  static list() {
+    return API.request<PackageObject[]>('packages/list', {});
+  }
+
+  static take(package_uid: string) {
+    return API.request<PackageObject>('packages/take', {
+      data: { uid: package_uid },
+    });
   }
 }
 

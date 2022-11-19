@@ -1,8 +1,4 @@
-/**
- * If you are not familiar with React Navigation, refer to the "Fundamentals" guide:
- * https://reactnavigation.org/docs/getting-started
- *
- */
+
 import { FontAwesome } from '@expo/vector-icons';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
@@ -19,6 +15,7 @@ import SendScreen from '../screens/SendScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
 import ProfileScreen from '../screens/ProfileScreen';
+import ListScreen from '../screens/ListScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -95,7 +92,7 @@ function BottomTabNavigator() {
       />
       <BottomTab.Screen
         name="List"
-        component={SendScreen}
+        component={ListScreen}
         options={{
           title: 'Мои доставки',
           tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,

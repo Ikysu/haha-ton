@@ -3,8 +3,13 @@ import { StyleSheet } from 'react-native';
 import EditScreenInfo from '../components/EditScreenInfo';
 import { Text, View } from '../components/Themed';
 
-export default function SendScreen() {
-  return <View style={styles.container}></View>;
+export default function ListScreen() {
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Tab Two</Text>
+      <Text>Списочек</Text>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({

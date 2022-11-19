@@ -1,46 +1,57 @@
 import React from 'react';
 import { Dimensions, StyleSheet } from 'react-native';
 import MapView, { Marker, Region } from 'react-native-maps';
-import EditScreenInfo from '../components/EditScreenInfo';
+import MapViewDirections from 'react-native-maps-directions';
+import { useRecoilValue } from 'recoil';
 import { Text, View } from '../components/Themed';
+import { GeoAtom } from '../store/geo.atom';
 import { RootTabScreenProps } from '../types';
-import * as Location from 'expo-location';
+import Locations from '../lib/coords';
+import SETTINGS from '../lib/settings';
 
 export default function MapScreen({ navigation }: RootTabScreenProps<'Map'>) {
+  const geoLocation = useRecoilValue(GeoAtom);
   const [location, setLocation] = React.useState<Region>();
 
   React.useEffect(() => {
-    (async () => {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Permission to access location was denied');
-        return;
-      }
-
-      let location = await Location.getCurrentPositionAsync({});
-      const scale = 0.005;
-      setLocation({
-        latitude: location.coords.latitude,
-        longitude: location.coords.longitude,
-        latitudeDelta: scale,
-        longitudeDelta: scale,
-      });
-    })();
+    const scale = 0.005;
+    setLocation({
+      ...geoLocation,
+      latitudeDelta: scale,
+      longitudeDelta: scale,
+    });
   }, []);
+
+  const midis = {
+    longitude: 55.1984224,
+    latitude: 61.3205282,
+  };
 
   return (
     <View style={styles.container}>
       <MapView region={location} style={styles.map}>
-        <Marker
-          coordinate={{ latitude: location?.latitude || 0, longitude: location?.longitude || 0 }}
-          title={'Откуда'}
-          description={'Вы здесь'}
-          image={require('../assets/images/image1.png')}
-        />
+        {Locations.map((coords) => (
+          <Marker
+            key={JSON.stringify(coords)}
+            coordinate={{
+              latitude: coords.latitude,
+              longitude: coords.longitude,
+            }}
+            title={coords.name}
+          />
+        ))}
       </MapView>
     </View>
   );
 }
+
+/*
+<MapViewDirections
+          origin={destination}
+          destination={destination}
+          apikey={SETTINGS.GOOGLE_API}
+        />
+*/
 
 const styles = StyleSheet.create({
   container: {
