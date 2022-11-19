@@ -38,5 +38,6 @@ export type UserGetByTokenData = {
 
 export type UserCreateData = UserGetByTokenData & {
     name:string;
+    push_token: string;
 }
 
