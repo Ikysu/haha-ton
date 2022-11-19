@@ -48,7 +48,7 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
             end:req.body.end
         })
         if(await resPkg.init()){
-            reply.send({ok:true, data:{uid:resPkg.uid}})
+            reply.send({ok:true, data:{uid:await resPkg.getInfo()}})
         }else{
             reply.send({ok:false, error:"Package not found"})
         }

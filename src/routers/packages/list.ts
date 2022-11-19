@@ -1,6 +1,7 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Sequelize } from "sequelize";
 import { UserGetByToken } from "../users";
+import { PackageObject } from "./types";
 
 type Req = FastifyRequest<{
     Headers: {
@@ -32,7 +33,7 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
             },
         ]}})
         
-        let out:any[]=response.map(e=>{
+        let out:PackageObject[]=response.map(e=>{
             let { uid, sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude } = e.dataValues
             return {
                 uid,

@@ -12,7 +12,8 @@ export type UserProfile = {
     geo:{
         latitude:number;
         longitude:number;
-    }
+    },
+    verified: boolean;
 }
 
 export type UserObject = UserProfile & {

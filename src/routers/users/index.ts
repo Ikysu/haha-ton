@@ -18,6 +18,7 @@ class User implements IUser {
     name!: string;
     rating!: number;
     push_token!: string;
+    verified!: boolean;
 
     model!: Model;
     
@@ -37,7 +38,8 @@ class User implements IUser {
             rating:this.rating,
             reg_date:this.reg_date,
             pkg:this.pkg,
-            geo:this.geo
+            geo:this.geo,
+            verified:this.verified
         }
     }
 
@@ -68,7 +70,7 @@ export class UserCreate extends User {
 
         let findResponse = await Users.findOne({where:{token:this.token}});
         if(findResponse){
-            let {rating, uid, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude} = findResponse.dataValues;
+            let {rating, uid, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude, verified} = findResponse.dataValues;
             this.rating=rating;
             this.uid=uid;
             this.name=name;
@@ -81,6 +83,7 @@ export class UserCreate extends User {
                 latitude,
                 longitude
             }
+            this.verified=verified;
             this.model=findResponse;
             return true
         }else{
@@ -91,10 +94,11 @@ export class UserCreate extends User {
                 pkg_sent:0,
                 pkg_delivered:0,
                 latitude:0,
-                longitude:0
+                longitude:0,
+                verified:Math.random() > 0.5
             })
             if(!createResponse) return false;
-            let {rating, uid, reg_date, pkg_sent, pkg_delivered, latitude, longitude} = createResponse.dataValues;
+            let {rating, uid, reg_date, pkg_sent, pkg_delivered, latitude, longitude, verified} = createResponse.dataValues;
             this.rating=rating;
             this.uid=uid;
             this.reg_date=reg_date;
@@ -106,6 +110,7 @@ export class UserCreate extends User {
                 latitude,
                 longitude
             }
+            this.verified=verified;
             this.model=createResponse;
             return true
         }
@@ -123,7 +128,7 @@ export class UserGetById extends User {
         
         let findResponse = await Users.findOne({where:{uid:this.uid}});
         if(!findResponse) return false;
-        let {rating, token, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude} = findResponse.dataValues;
+        let {rating, token, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude, verified} = findResponse.dataValues;
         this.name=name;
         this.rating=rating;
         this.token=token;
@@ -136,6 +141,7 @@ export class UserGetById extends User {
             latitude,
             longitude
         }
+        this.verified=verified;
         this.model=findResponse;
         return true
     }
@@ -151,7 +157,7 @@ export class UserGetByToken extends User {
         
         let findResponse = await Users.findOne({where:{token:this.token}});
         if(!findResponse) return false;
-        let {rating, token, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude} = findResponse.dataValues;
+        let {rating, token, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude, verified} = findResponse.dataValues;
         this.name=name;
         this.rating=rating;
         this.token=token;
@@ -164,6 +170,7 @@ export class UserGetByToken extends User {
             latitude,
             longitude
         }
+        this.verified=verified;
         this.model=findResponse;
         return true
     }

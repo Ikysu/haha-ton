@@ -6,6 +6,7 @@ import {
     PackageInfo,
     IPackage,
     PackageStatus,
+    PackageObject
 } from "./types";
 
 import { UserGetById } from "./../users/index";
@@ -55,7 +56,7 @@ class Package implements IPackage {
         }
     }
 
-    async getInfo(): Promise<any> {
+    async getInfo(): Promise<PackageObject> {
         var out = {
             uid:this.uid,
             sender_uid:this.sender_uid,
@@ -66,19 +67,19 @@ class Package implements IPackage {
             start:this.start,
             end:this.end
         }
-        if(this.status.courier_uid){
-            let response = new UserGetById({
-                db:this.db,
-                uid:this.status.courier_uid
-            })
-            if(await response.init()) {
-                out.status={
-                    type:this.status.type,
-                    //@ts-ignore Не бей меня
-                    courier:response.getProfile()
-                }
-            }
-        }
+        //if(this.status.courier_uid){
+        //    let response = new UserGetById({
+        //        db:this.db,
+        //        uid:this.status.courier_uid
+        //    })
+        //    if(await response.init()) {
+        //        out.status={
+        //            type:this.status.type,
+        //            //@ts-ignore Не бей меня
+        //            courier:response.getProfile()
+        //        }
+        //    }
+        //}
         return out
     }
 }

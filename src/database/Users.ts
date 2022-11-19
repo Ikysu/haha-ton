@@ -31,6 +31,9 @@ export default (s:Sequelize,modelName:string)=>s.define(modelName,{
     },
     push_token:{
         type: DataTypes.STRING
+    },
+    verified: {
+        type: DataTypes.BOOLEAN
     }
 }, {
     
