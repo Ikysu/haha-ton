@@ -7,8 +7,8 @@ export type PackageRestoreData = {
 }
 
 export type PackageCreateData = {
-    sender_id: string; // ID Отправителя
-    recipient_id: string; // ID Получателя
+    sender_uid: string; // ID Отправителя
+    recipient_uid: string; // ID Получателя
     info:PackageInfo; // Инфо о самой посылке (Ниже)
     db:Sequelize;
     rating: number;
@@ -30,8 +30,8 @@ export type GeoPos = {
 
 export type PackageObject = {
     uid: string;
-    sender_id: string;
-    recipient_id: string;
+    sender_uid: string;
+    recipient_uid: string;
     info: PackageInfo;
     status: PackageStatus;
     rating:number;
@@ -44,7 +44,7 @@ export interface IPackage extends PackageObject{
 
 export type PackageStatus = {
     type:"idle" | "active" | "wait" | "delivered";
-    courier_id: null | string;
+    courier_uid: null | string;
 }
 
 export type PackageStatusObject = {

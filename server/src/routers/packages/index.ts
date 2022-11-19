@@ -17,8 +17,8 @@ import { UserGet } from "./../users/index";
 class Package implements IPackage {
     db:Sequelize;
     uid!: string;
-    sender_id!: string;
-    recipient_id!: string;
+    sender_uid!: string;
+    recipient_uid!: string;
     info!: PackageInfo;
     status!: PackageStatus;
     rating!: number;
@@ -34,8 +34,8 @@ class Package implements IPackage {
     getInfo(): PackageObject {
         return {
             uid:this.uid,
-            sender_id:this.sender_id,
-            recipient_id:this.recipient_id,
+            sender_uid:this.sender_uid,
+            recipient_uid:this.recipient_uid,
             info:this.info,
             status:this.status,
             rating:this.rating
@@ -43,10 +43,10 @@ class Package implements IPackage {
     }
 
     async getStatus(): Promise<PackageStatusObject | boolean> {
-        if(this.status.courier_id){
+        if(this.status.courier_uid){
             let response = new UserGet({
                 db:this.db,
-                uid:this.status.courier_id
+                uid:this.status.courier_uid
             })
             if(!response) return response;
             return {
@@ -68,8 +68,8 @@ export class PackageGet extends Package {
         let { Packages } = this.db.models;
         let response = await Packages.findOne({where:{uid:this.uid}})
         if(!response) return false;
-        this.sender_id=response.dataValues.sender_id
-        this.recipient_id=response.dataValues.recipient_id
+        this.sender_uid=response.dataValues.sender_uid
+        this.recipient_uid=response.dataValues.recipient_uid
         this.info={
             sachet:response.dataValues.info_sachet,
             fragile:response.dataValues.info_fragile,
@@ -79,7 +79,7 @@ export class PackageGet extends Package {
         };
         this.status={
             type:response.dataValues.status,
-            courier_id:response.dataValues.courier_id
+            courier_uid:response.dataValues.courier_uid
         };
         this.rating=response.dataValues.rating;
 
@@ -91,12 +91,12 @@ export class PackageGet extends Package {
 export class PackageCreate extends Package {
     constructor(data: PackageCreateData) {
         super(data.db);
-        this.sender_id=data.sender_id
-        this.recipient_id=data.recipient_id
+        this.sender_uid=data.sender_uid
+        this.recipient_uid=data.recipient_uid
         this.info=data.info;
         this.status={
             type:"idle",
-            courier_id:null
+            courier_uid:null
         };
         this.rating=data.rating;
     }
@@ -104,15 +104,15 @@ export class PackageCreate extends Package {
     async init() {
         let { Packages } = this.db.models;
         let response = await Packages.create({
-            sender_id:this.sender_id,
-            recipient_id:this.recipient_id,
+            sender_uid:this.sender_uid,
+            recipient_uid:this.recipient_uid,
             info_sachet:this.info.sachet,
             info_fragile:this.info.fragile,
             info_width:this.info.width,
             info_height:this.info.height,
             info_length:this.info.length,
             status:this.status.type,
-            courier_id:this.status.courier_id,
+            courier_uid:this.status.courier_uid,
             rating:this.rating
         });
         this.uid=response.dataValues.uid;

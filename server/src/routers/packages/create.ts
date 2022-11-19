@@ -4,8 +4,8 @@ import { PackageCreate } from "./index";
 
 type Req = FastifyRequest<{
     Body: {
-        sender_id:string;
-        recipient_id:string;
+        sender_uid:string;
+        recipient_uid:string;
         info:{
             sachet:boolean;
             fragile:boolean;
@@ -23,8 +23,8 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
 
     let res = new PackageCreate({
         db,
-        sender_id:req.body.sender_id,
-        recipient_id:req.body.recipient_id,
+        sender_uid:req.body.sender_uid,
+        recipient_uid:req.body.recipient_uid,
         info:req.body.info,
         rating:req.body.rating
     })
