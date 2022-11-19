@@ -1,31 +1,37 @@
 import { Sequelize } from "sequelize";
 
-export type UserObject = {
+export type UserProfile = {
     uid:string;
-    token:string;
     name:string;
     rating:number;
+    reg_date:number;
+    pkg: {
+        sent: number;
+        delivered: number;
+    }
 }
 
-export interface IUser extends UserObject{
+export type UserObject = UserProfile & {
+    token:string;
+}
+
+export interface IUser extends UserObject {
     db: Sequelize;
     init(): Promise<boolean>;
 }
 
 
-export type UserCreateData = {
+export type UserGetByIdData = {
+    db:Sequelize;
+    uid:string;
+}
+
+export type UserGetByTokenData = {
     db:Sequelize;
     token:string;
+}
+
+export type UserCreateData = UserGetByTokenData & {
     name:string;
 }
 
-export type UserGetData = {
-    db:Sequelize;
-    uid:string;
-}
-
-export type UserProfile = {
-    uid:string;
-    name:string;
-    rating:number;
-}

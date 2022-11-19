@@ -1,24 +1,22 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { Sequelize } from "sequelize";
-import { UserCreate } from ".";
+import { UserCreate, UserGetById } from ".";
 
 type Req = FastifyRequest<{
     Querystring: {
-        token:string;
-        name:string;
+        uid:string;
     }
 }>
 
 export default async function get (req: Req, reply: FastifyReply, db: Sequelize) {    
-    let userGet = new UserCreate({
+    let userGet = new UserGetById({
         db,
-        token:req.query.token,
-        name:req.query.name
+        uid:req.query.uid
     })
 
     if(await userGet.init()){
         reply.send({ok:true, data:userGet.getProfile()})
     }else{
-        reply.send({ok:false, error:"Bad user"})
+        reply.send({ok:false, error:"User not found"})
     }
 }

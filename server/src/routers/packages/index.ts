@@ -11,7 +11,7 @@ import {
     PackageStatusObject
 } from "./types";
 
-import { UserGet } from "./../users/index";
+import { UserGetById } from "./../users/index";
 
 
 class Package implements IPackage {
@@ -41,7 +41,7 @@ class Package implements IPackage {
             rating:this.rating
         }
         if(this.status.courier_uid){
-            let response = new UserGet({
+            let response = new UserGetById({
                 db:this.db,
                 uid:this.status.courier_uid
             })
@@ -54,22 +54,6 @@ class Package implements IPackage {
             }
         }
         return out
-    }
-
-    async getStatus(): Promise<PackageStatusObject | boolean> {
-        if(this.status.courier_uid){
-            let response = new UserGet({
-                db:this.db,
-                uid:this.status.courier_uid
-            })
-            if(!await response.init()||!response) return false;
-            return {
-                type:this.status.type,
-                courier:response.getProfile()
-            }
-        }else{
-            return false
-        }
     }
 }
 

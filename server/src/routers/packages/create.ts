@@ -1,10 +1,10 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Sequelize } from "sequelize";
+import { UserGetByToken } from "../users";
 import { PackageCreate } from "./index";
 
 type Req = FastifyRequest<{
     Body: {
-        sender_uid:string;
         recipient_uid:string;
         info:{
             sachet:boolean;
@@ -12,8 +12,12 @@ type Req = FastifyRequest<{
             width:number;
             height:number;
             length:number;
+            weight:number;
         };
         rating:number;
+    },
+    Headers: {
+        authorization: string;
     }
 }>
 
@@ -21,16 +25,24 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
 
     // TODO: Сделать проверку входных данных и существование пользователя
 
-    let res = new PackageCreate({
+    let resUsr = new UserGetByToken({
         db,
-        sender_uid:req.body.sender_uid,
-        recipient_uid:req.body.recipient_id,
-        info:req.body.info,
-        rating:req.body.rating
+        token:req.headers.authorization
     })
-    if(await res.init()){
-        reply.send({ok:true, data:{uid:res.uid}})
+    if(await resUsr.init()){
+        let resPkg = new PackageCreate({
+            db,
+            sender_uid:resUsr.getProfile().uid,
+            recipient_uid:req.body.recipient_uid,
+            info:req.body.info,
+            rating:req.body.rating
+        })
+        if(await resPkg.init()){
+            reply.send({ok:true, data:{uid:resPkg.uid}})
+        }else{
+            reply.send({ok:false, error:"Package not found"})
+        }
     }else{
-        reply.send({ok:false})
+        reply.send({ok:false, error:"Not authtorized"})
     }
 }
