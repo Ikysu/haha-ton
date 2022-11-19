@@ -18,7 +18,7 @@ type Req = FastifyRequest<{
     }
 }>
 
-export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
+export default async function (req: Req, reply: FastifyReply, db: Sequelize, sendPush: Promise<boolean>) {
 
     // TODO: Сделать проверку входных данных и существование пользователя, а так же на наличие активных посылок как в take
 
@@ -45,6 +45,17 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
         })
         if(await resPkg.init()){
             reply.send({ok:true, data:await resPkg.getInfo()})
+
+            let {Users} = db.models;
+            Users.findOne({where:{uid:resPkg.recipient_uid}}).then(user=>{
+                //@ts-ignore
+                sendPush({
+                    to:user?.dataValues.push_token,
+                    title:"Вам отправили посылку!",
+                    body:`${resUsr.name} отправил(а) вам посылку! Перейдите в приложение, чтобы отследить её!`,
+                    data:{}
+                })
+            })
         }else{
             reply.send({ok:false, error:"Package not found"})
         }

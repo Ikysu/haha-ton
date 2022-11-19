@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { Sequelize } from "sequelize";
+import { Sequelize, Op } from "sequelize";
 import { UserGetByToken } from "../users";
 import { PackageObject } from "./types";
 
@@ -21,17 +21,21 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
     if(await resUsr.init()){
         let { Packages } = db.models;
 
-        let response = await Packages.findAll({where:{$or:[
-            {
-                sender_uid:resUsr.uid
-            },
-            {
-                recipient_uid:resUsr.uid
-            },
-            {
-                status:{courier_uid:resUsr.uid}
-            },
-        ]}})
+        let response = await Packages.findAll({
+            where:{
+                [Op.or]:[
+                    {
+                        sender_uid:resUsr.uid
+                    },
+                    {
+                        recipient_uid:resUsr.uid
+                    },
+                    {
+                        courier_uid:resUsr.uid
+                    },
+                ]
+            }
+        })
         
         let out:PackageObject[]=response.map(e=>{
             let { uid, sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude, comment } = e.dataValues

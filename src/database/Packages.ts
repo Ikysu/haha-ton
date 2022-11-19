@@ -49,7 +49,7 @@ export default (s:Sequelize,modelName:string)=>s.define(modelName,{
     end_longitude:{
         type: DataTypes.TEXT
     },
-    coment:{
+    comment:{
         type: DataTypes.TEXT
     }
 }, {

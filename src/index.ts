@@ -83,7 +83,7 @@ readdirSync("./src/routers").forEach(route=>{
         let methodName = method.replace(/\.[^.]*$/, "");
         if(methodName!="types"){
             let script = (await import(`./routers/${route}/${method}`)).default;
-            fastify[script?.name=="get"?"get":"post"](`/${route}/${methodName!="index"?methodName:""}`, (...argv)=>script(...argv,sequelize))
+            fastify[script?.name=="get"?"get":"post"](`/${route}/${methodName!="index"?methodName:""}`, (...argv)=>script(...argv,sequelize,sendPush))
         }
     })
 })

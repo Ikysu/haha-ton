@@ -8,7 +8,7 @@ type Req = FastifyRequest<{
     }
 }>
 
-export default async function get (req: Req, reply: FastifyReply, db: Sequelize) {    
+export default async function (req: Req, reply: FastifyReply, db: Sequelize) {    
     let userGet = new UserGetById({
         db,
         uid:req.query.uid
