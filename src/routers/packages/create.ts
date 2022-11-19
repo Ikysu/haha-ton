@@ -11,7 +11,7 @@ type Req = FastifyRequest<{
         rating:number;
         start:GeoPos;
         end:GeoPos;
-        coment:string;
+        comment:string;
     },
     Headers: {
         authorization: string;
@@ -41,7 +41,7 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
             rating:req.body.rating,
             start:req.body.start,
             end:req.body.end,
-            coment:req.body.coment
+            comment:req.body.comment
         })
         if(await resPkg.init()){
             reply.send({ok:true, data:await resPkg.getInfo()})

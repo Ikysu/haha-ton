@@ -23,7 +23,7 @@ class Package implements IPackage {
     rating!: number;
     start!: GeoPos;
     end!: GeoPos;
-    coment!: string;
+    comment!: string;
 
     constructor(db: Sequelize) {
         this.db=db;
@@ -68,7 +68,7 @@ class Package implements IPackage {
             rating:this.rating,
             start:this.start,
             end:this.end,
-            coment:this.coment
+            comment:this.comment
         }
         //if(this.status.courier_uid){
         //    let response = new UserGetById({
@@ -96,7 +96,7 @@ export class PackageGet extends Package {
         let { Packages } = this.db.models;
         let response = await Packages.findOne({where:{uid:this.uid}})
         if(!response) return false;
-        let { sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude, coment } = response.dataValues
+        let { sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude, comment } = response.dataValues
         this.sender_uid=sender_uid
         this.recipient_uid=recipient_uid
         this.info={
@@ -120,7 +120,7 @@ export class PackageGet extends Package {
             latitude:end_latitude,
             longitude:end_longitude
         }
-        this.coment=coment
+        this.comment=comment
 
         return true;
     }
@@ -140,7 +140,7 @@ export class PackageCreate extends Package {
         this.rating=data.rating;
         this.start=data.start;
         this.end=data.end;
-        this.coment=data.coment;
+        this.comment=data.comment;
     }
 
     async init() {
@@ -161,7 +161,7 @@ export class PackageCreate extends Package {
             start_longitude:this.start.longitude,
             end_latitude:this.end.latitude,
             end_longitude:this.end.longitude,
-            coment:this.coment
+            comment:this.comment
         });
         this.uid=response.dataValues.uid;
         return true;

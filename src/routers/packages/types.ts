@@ -14,7 +14,7 @@ export type PackageCreateData = {
     rating: number;
     start:GeoPos;
     end:GeoPos;
-    coment:string;
+    comment:string;
 }
 
 export type PackageInfo = {
@@ -40,7 +40,7 @@ export type PackageObject = {
     rating:number;
     start:GeoPos;
     end:GeoPos;
-    coment:string;
+    comment:string;
 }
 
 export interface IPackage extends PackageObject{
