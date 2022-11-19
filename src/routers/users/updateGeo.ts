@@ -19,8 +19,7 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
     })
 
     if(await userGet.init()){
-        await userGet.setGeo(req.body.latitude, req.body.longitude)
-        reply.send({ok:true, data:userGet.getProfile()})
+        reply.send({ok:true, data:await userGet.setGeo(req.body.latitude, req.body.longitude)})
     }else{
         reply.send({ok:false, error:"User not found"})
     }

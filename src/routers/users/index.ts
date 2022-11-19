@@ -1,3 +1,4 @@
+import { throws } from "assert";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { Model, Sequelize } from "sequelize";
 import { IUser, UserCreateData, UserGetByIdData, UserGetByTokenData, UserProfile } from "./types";
@@ -40,8 +41,6 @@ class User implements IUser {
     }
 
     async setGeo(latitude: number, longitude: number) {
-        let { Users } = this.db.models;
-        console.log({where:{uid:this.uid}})
         let res = await this.model.update({
             latitude,
             longitude
@@ -52,6 +51,7 @@ class User implements IUser {
                 longitude
             }
         }
+        return this.getProfile
     }
 }
 
