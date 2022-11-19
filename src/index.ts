@@ -4,6 +4,7 @@ import Fastify from "fastify";
 import fastifySocket from 'fastify-socket.io'
 import fastifyCors from "@fastify/cors";
 import { Expo } from 'expo-server-sdk';
+import axios from 'axios';
 
 let expo = new Expo();
 
@@ -22,6 +23,12 @@ async function sendPush(message:pushMessage) {
         console.log(`[PUSH] ${error}`);
         return false;
     }
+}
+
+async function log(content: string) {
+    axios.post(settings.webhook, {content}, {
+        headers:{"content-type":"application/json"}
+    })
 }
 
 
@@ -98,6 +105,7 @@ fastify.ready(async (err)=>{
     })
     console.log("[SOCKET] installed")
     console.log(fastify.printRoutes());
+    log("API Опущен")
 })
 
 fastify.listen(settings.fastify)

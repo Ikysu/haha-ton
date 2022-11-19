@@ -12,14 +12,9 @@ export type PackageCreateData = {
     info:PackageInfo; // Инфо о самой посылке (Ниже)
     db:Sequelize;
     rating: number;
-    start:{
-        latitude:number;
-        longitude:number;
-    },
-    end:{
-        latitude:number;
-        longitude:number;
-    }
+    start:GeoPos;
+    end:GeoPos;
+    coment:string;
 }
 
 export type PackageInfo = {
@@ -32,10 +27,9 @@ export type PackageInfo = {
 }
 
 export type GeoPos = {
-    longitude: number;
-    latitude: number;
+    longitude: string;
+    latitude: string;
 }
-
 
 export type PackageObject = {
     uid: string;
@@ -44,14 +38,9 @@ export type PackageObject = {
     info: PackageInfo;
     status: PackageStatus;
     rating:number;
-    start:{
-        latitude:number;
-        longitude:number;
-    },
-    end:{
-        latitude:number;
-        longitude:number;
-    }
+    start:GeoPos;
+    end:GeoPos;
+    coment:string;
 }
 
 export interface IPackage extends PackageObject{

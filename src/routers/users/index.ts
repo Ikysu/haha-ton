@@ -157,10 +157,10 @@ export class UserGetByToken extends User {
         
         let findResponse = await Users.findOne({where:{token:this.token}});
         if(!findResponse) return false;
-        let {rating, token, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude, verified} = findResponse.dataValues;
+        let {uid, rating, token, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude, verified} = findResponse.dataValues;
+        this.uid=uid
         this.name=name;
         this.rating=rating;
-        this.token=token;
         this.reg_date=reg_date;
         this.pkg={
             sent:pkg_sent,

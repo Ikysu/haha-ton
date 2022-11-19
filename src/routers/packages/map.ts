@@ -13,7 +13,7 @@ export default async function (req: FastifyRequest, reply: FastifyReply, db: Seq
     let response = await Packages.findAll()
     
     let out:PackageObject[]=response.map(e=>{
-        let { uid, sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude } = e.dataValues
+        let { uid, sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude, coment } = e.dataValues
         return {
             uid,
             sender_uid,
@@ -38,11 +38,10 @@ export default async function (req: FastifyRequest, reply: FastifyReply, db: Seq
             end:{
                 latitude:end_latitude,
                 longitude:end_longitude
-            }
+            },
+            coment
         }
     })
-
-    console.log(out)
     
     reply.send({ok:true,data:out})
     

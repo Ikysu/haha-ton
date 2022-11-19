@@ -4,10 +4,10 @@ export default (s:Sequelize,modelName:string)=>s.define(modelName,{
         type: DataTypes.UUID,
         defaultValue: DataTypes.UUIDV4
     },
-    sender_id: {
+    sender_uid: {
         type: DataTypes.STRING
     },
-    recipient_id: {
+    recipient_uid: {
         type: DataTypes.STRING
     },
     info_sachet:{
@@ -31,23 +31,26 @@ export default (s:Sequelize,modelName:string)=>s.define(modelName,{
     status:{
         type: DataTypes.STRING // Можно поменять на INTEGER для оптимизации бд, но...
     },
-    courier_id:{
+    courier_uid:{
         type: DataTypes.STRING
     },
     rating:{
         type: DataTypes.INTEGER
     },
     start_latitude:{
-        type: DataTypes.FLOAT
+        type: DataTypes.TEXT
     },
     start_longitude:{
-        type: DataTypes.FLOAT
+        type: DataTypes.TEXT
     },
     end_latitude:{
-        type: DataTypes.FLOAT
+        type: DataTypes.TEXT
     },
     end_longitude:{
-        type: DataTypes.FLOAT
+        type: DataTypes.TEXT
+    },
+    comment:{
+        type: DataTypes.TEXT
     }
 }, {
 

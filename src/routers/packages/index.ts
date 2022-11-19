@@ -6,7 +6,8 @@ import {
     PackageInfo,
     IPackage,
     PackageStatus,
-    PackageObject
+    PackageObject,
+    GeoPos
 } from "./types";
 
 import { UserGetById } from "./../users/index";
@@ -20,8 +21,9 @@ class Package implements IPackage {
     info!: PackageInfo;
     status!: PackageStatus;
     rating!: number;
-    start!: { latitude: number; longitude: number; };
-    end!: { latitude: number; longitude: number; };
+    start!: GeoPos;
+    end!: GeoPos;
+    coment!: string;
 
     constructor(db: Sequelize) {
         this.db=db;
@@ -65,7 +67,8 @@ class Package implements IPackage {
             status:this.status,
             rating:this.rating,
             start:this.start,
-            end:this.end
+            end:this.end,
+            coment:this.coment
         }
         //if(this.status.courier_uid){
         //    let response = new UserGetById({
@@ -93,7 +96,7 @@ export class PackageGet extends Package {
         let { Packages } = this.db.models;
         let response = await Packages.findOne({where:{uid:this.uid}})
         if(!response) return false;
-        let { sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude } = response.dataValues
+        let { sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude, coment } = response.dataValues
         this.sender_uid=sender_uid
         this.recipient_uid=recipient_uid
         this.info={
@@ -117,6 +120,7 @@ export class PackageGet extends Package {
             latitude:end_latitude,
             longitude:end_longitude
         }
+        this.coment=coment
 
         return true;
     }
@@ -134,8 +138,9 @@ export class PackageCreate extends Package {
             courier_uid:null
         };
         this.rating=data.rating;
-        this.start=data.start
-        this.end=data.end
+        this.start=data.start;
+        this.end=data.end;
+        this.coment=data.coment;
     }
 
     async init() {
@@ -155,7 +160,8 @@ export class PackageCreate extends Package {
             start_latitude:this.start.latitude,
             start_longitude:this.start.longitude,
             end_latitude:this.end.latitude,
-            end_longitude:this.end.longitude
+            end_longitude:this.end.longitude,
+            coment:this.coment
         });
         this.uid=response.dataValues.uid;
         return true;
