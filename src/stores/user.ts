@@ -1,17 +1,18 @@
-import {makeAutoObservable} from 'mobx';
-import {hydrateStore, makePersistable} from 'mobx-persist-store';
-import { UserProfile } from '../services/api/type';
+import { makeAutoObservable } from 'mobx';
+import { hydrateStore, makePersistable } from 'mobx-persist-store';
+import { PackageObject, UserProfile } from '../services/api/type';
 
 export class UserStore implements IStore {
   token = '';
   profile!: UserProfile;
+  stores: PackageObject[] = [];
 
   constructor() {
     makeAutoObservable(this);
 
     makePersistable(this, {
       name: UserStore.name,
-      properties: ['token', 'profile'],
+      properties: ['token', 'profile', 'stores'],
     });
   }
 

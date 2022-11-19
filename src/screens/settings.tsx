@@ -25,40 +25,6 @@ export const Settings: NavioScreen = observer(({}) => {
   const navigation = useNavigation();
   const {ui} = useStores();
 
-  // State
-  const [appearance, setAppearance] = useState(ui.appearance);
-  const [language, setLanguage] = useState(ui.language);
-
-  // Computed
-  const unsavedChanges = ui.appearance !== appearance || ui.language !== language;
-
-  const appearanceInitialIndex = appearances.findIndex(it => it === appearance);
-  const appearanceSegments = appearancesUI.map(it => ({label: it}));
-
-  const languageInitialIndex = languages.findIndex(it => it === language);
-  const languageSegments = languagesUI.map(it => ({label: it}));
-
-  // Start
-  useEffect(() => {
-    navigation.setOptions({
-      headerRight: () =>
-        unsavedChanges ? <HeaderButton onPress={handleSave} label="Save" /> : null,
-    });
-  }, [unsavedChanges, appearance, language]);
-
-  // Methods
-  const handleAppearanceIndexChange = (index: number) =>
-    setAppearance(appearanceUIToInternal[appearancesUI[index]]);
-  const handleLanguageIndexChange = (index: number) =>
-    setLanguage(languageUIToInternal[languagesUI[index]]);
-
-  const handleSave = () => {
-    ui.setMany({
-      appearance,
-      language,
-    });
-  };
-
   return (
     <View flex bg-bgColor>
       <ScrollView contentInsetAdjustmentBehavior="always">
@@ -71,14 +37,7 @@ export const Settings: NavioScreen = observer(({}) => {
                 </Text>
               </View>
 
-              <SegmentedControl
-                initialIndex={appearanceInitialIndex}
-                segments={appearanceSegments}
-                backgroundColor={Colors.bgColor}
-                activeColor={Colors.primary}
-                inactiveColor={Colors.textColor}
-                onChangeIndex={handleAppearanceIndexChange}
-              />
+
             </Row>
           </View>
 
@@ -90,14 +49,7 @@ export const Settings: NavioScreen = observer(({}) => {
                 </Text>
               </View>
 
-              <SegmentedControl
-                initialIndex={languageInitialIndex}
-                segments={languageSegments}
-                backgroundColor={Colors.bgColor}
-                activeColor={Colors.primary}
-                inactiveColor={Colors.textColor}
-                onChangeIndex={handleLanguageIndexChange}
-              />
+      
             </Row>
           </View>
         </Section>

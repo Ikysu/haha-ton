@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { View } from 'react-native-ui-lib';
+import { TextField, View } from 'react-native-ui-lib';
 import { observer } from 'mobx-react';
 import { useNavigation } from '@react-navigation/native';
 import { NavioScreen } from 'rn-navio';
@@ -44,16 +44,34 @@ export const Send: NavioScreen<Props> = observer(({ type = 'push' }) => {
   // UI Methods
 
   return (
-    <View flex bg-bgColor>
+    <View flex bg-bgColor padding-5>
       <ScrollView contentInsetAdjustmentBehavior="always">
-        <Section title={t.do('section.navio.title')}>
-          <BButton marginV-s1 label={t.do('section.navio.button.push')} onPress={push} />
-          <BButton marginV-s1 label={t.do('section.navio.button.push_stack')} onPress={pushStack} />
-          <BButton marginV-s1 label={t.do('section.navio.button.jump_to')} onPress={jumpTo} />
-          <BButton marginV-s1 label={t.do('section.navio.button.show')} onPress={show} />
-          <BButton marginV-s1 label={t.do('section.navio.button.back')} onPress={goBack} />
-          <BButton marginV-s1 label={'Set Root - Tabs'} onPress={setRoot} />
-        </Section>
+        <TextField text70 floatingPlaceholder placeholder="Откуда" floatOnFocus />
+        <TextField text70 floatingPlaceholder placeholder="Куда" floatOnFocus />
+        <TextField text70 floatingPlaceholder placeholder="Получатель" floatOnFocus />
+        <View flex style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <TextField
+            style={{ width: '30%' }}
+            text70
+            floatingPlaceholder
+            placeholder="Вес"
+            floatOnFocus
+          />
+          <TextField
+            style={{ width: '30%' }}
+            text70
+            floatingPlaceholder
+            placeholder="Длина"
+            floatOnFocus
+          />
+          <TextField
+            style={{ width: '30%' }}
+            text70
+            floatingPlaceholder
+            placeholder="Высота"
+            floatOnFocus
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -61,5 +79,5 @@ export const Send: NavioScreen<Props> = observer(({ type = 'push' }) => {
 
 Send.options = (props) => ({
   headerBackTitleStyle: false,
-  title: `${services.t.do('example.title')} ${(props?.route?.params as Props)?.type ?? ''}`,
+  title: services.t.do('send.title'),
 });

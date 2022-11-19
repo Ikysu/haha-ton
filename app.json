@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "Expo Starter",
-    "slug": "expo-starter",
+    "name": "Wanderer",
+    "slug": "wanderer",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

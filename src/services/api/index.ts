@@ -1,3 +1,4 @@
+import { PackageApi } from './package';
 import { UserApi } from './user';
 
 export class ApiService implements IService {
@@ -5,9 +6,11 @@ export class ApiService implements IService {
   private inited = false;
 
   user: UserApi;
+  package: PackageApi;
 
   constructor() {
-    this.user = new UserApi(this.baseurl);
+    this.user = new UserApi(this.baseurl, this);
+    this.package = new PackageApi(this.baseurl, this);
   }
 
   init = async (): PVoid => {

@@ -9,6 +9,7 @@ export type UserProfile = {
   rating: number;
   reg_date: string;
   avatar: string;
+  verified: boolean;
   pkg: {
     sent: number;
     delivered: number;
