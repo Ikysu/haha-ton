@@ -15,6 +15,14 @@ type Req = FastifyRequest<{
             weight:number;
         };
         rating:number;
+        start:{
+            latitude:number;
+            longitude:number
+        };
+        end:{
+            latitude:number;
+            longitude:number
+        };
     },
     Headers: {
         authorization: string;
@@ -35,7 +43,9 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
             sender_uid:resUsr.getProfile().uid,
             recipient_uid:req.body.recipient_uid,
             info:req.body.info,
-            rating:req.body.rating
+            rating:req.body.rating,
+            start:req.body.start,
+            end:req.body.end
         })
         if(await resPkg.init()){
             reply.send({ok:true, data:{uid:resPkg.uid}})

@@ -2,6 +2,7 @@ import {readFileSync, readdirSync} from "fs";
 import { Sequelize } from 'sequelize';
 import Fastify from "fastify";
 import fastifySocket from 'fastify-socket.io'
+import fastifyCors from "@fastify/cors";
 
 const settings = JSON.parse(readFileSync("settings.json", "utf-8"));
 
@@ -31,9 +32,15 @@ readdirSync("./src/database").forEach(async model=>{
 
 // Fastify
 
-const fastify = Fastify();
+const fastify = Fastify({
+    logger:true
+});
 
 fastify.register(fastifySocket)
+fastify.register(fastifyCors, {
+    origin: "*",
+    methods:["GET", "POST", "PUT", "DELETE"]
+})
 
 readdirSync("./src/routers").forEach(route=>{
     readdirSync(`./src/routers/${route}`).forEach(async method=>{
@@ -47,18 +54,20 @@ readdirSync("./src/routers").forEach(route=>{
 
 fastify.ready(async (err)=>{
     if(err) throw err;
+    
     await sequelize.authenticate();
+    console.log("[DATABASE] authenticated")
     await sequelize.sync({
         force:true
     })
-
-
+    console.log("[DATABASE] synced")
 
     let soc = await import(`./chat`);
     Object.getOwnPropertyNames(soc).filter(e=>e[0]!="_").forEach(event=>{
         let socScript = soc[event as keyof typeof soc];
         fastify.io.on(event, (socket)=>socScript(socket,sequelize))
     })
+    console.log("[SOCKET] installed")
     console.log(fastify.printRoutes());
 })
 

@@ -5,6 +5,9 @@ let rooms = {
 
 }
 
-export function connect(socket: Socket, db: Sequelize) {
-    
+export function connection(socket: Socket, db: Sequelize) {
+    console.log("new connection")
+    socket.on("connect", (room_id)=>{
+        console.log(room_id)
+    })
 }

@@ -36,6 +36,18 @@ export default (s:Sequelize,modelName:string)=>s.define(modelName,{
     },
     rating:{
         type: DataTypes.INTEGER
+    },
+    start_latitude:{
+        type: DataTypes.FLOAT
+    },
+    start_longitude:{
+        type: DataTypes.FLOAT
+    },
+    end_latitude:{
+        type: DataTypes.FLOAT
+    },
+    end_longitude:{
+        type: DataTypes.FLOAT
     }
 }, {
 

@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { Sequelize } from "sequelize";
+import { Model, Sequelize } from "sequelize";
 import { IUser, UserCreateData, UserGetByIdData, UserGetByTokenData, UserProfile } from "./types";
 
 // TODO: Сделать 2 отдельных класса и в целом переписать
@@ -9,12 +9,15 @@ class User implements IUser {
     constructor(db: Sequelize) {
         this.db=db;
     }
+    geo!: { latitude: number; longitude: number; };
     reg_date!: number;
     pkg!: { sent: number; delivered: number; };
     uid!: string;
     token!: string;
     name!: string;
     rating!: number;
+
+    model!: Model;
     
 
     async init(): Promise<boolean> {
@@ -31,7 +34,23 @@ class User implements IUser {
             name:this.name,
             rating:this.rating,
             reg_date:this.reg_date,
-            pkg:this.pkg
+            pkg:this.pkg,
+            geo:this.geo
+        }
+    }
+
+    async setGeo(latitude: number, longitude: number) {
+        let { Users } = this.db.models;
+        console.log({where:{uid:this.uid}})
+        let res = await this.model.update({
+            latitude,
+            longitude
+        })
+        if(res){
+            this.geo={
+                latitude,
+                longitude
+            }
         }
     }
 }
@@ -47,14 +66,20 @@ export class UserCreate extends User {
 
         let findResponse = await Users.findOne({where:{token:this.token}});
         if(findResponse){
-            this.rating=findResponse.dataValues.rating;
-            this.uid=findResponse.dataValues.uid;
-            this.name=findResponse.dataValues.name;
-            this.reg_date=findResponse.dataValues.reg_date;
+            let {rating, uid, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude} = findResponse.dataValues;
+            this.rating=rating;
+            this.uid=uid;
+            this.name=name;
+            this.reg_date=reg_date;
             this.pkg={
-                sent:findResponse.dataValues.pkg_sent,
-                delivered:findResponse.dataValues.pkg_delivered
+                sent:pkg_sent,
+                delivered:pkg_delivered
             }
+            this.geo={
+                latitude,
+                longitude
+            }
+            this.model=findResponse;
             return true
         }else{
             let createResponse = await Users.create({
@@ -62,16 +87,24 @@ export class UserCreate extends User {
                 name:this.name,
                 rating:1000,
                 pkg_sent:0,
-                pkg_delivered:0
+                pkg_delivered:0,
+                latitude:0,
+                longitude:0
             })
             if(!createResponse) return false;
-            this.rating=createResponse.dataValues.rating;
-            this.uid=createResponse.dataValues.uid;
-            this.reg_date=createResponse.dataValues.reg_date;
+            let {rating, uid, reg_date, pkg_sent, pkg_delivered, latitude, longitude} = createResponse.dataValues;
+            this.rating=rating;
+            this.uid=uid;
+            this.reg_date=reg_date;
             this.pkg={
-                sent:createResponse.dataValues.pkg_sent,
-                delivered:createResponse.dataValues.pkg_delivered
+                sent:pkg_sent,
+                delivered:pkg_delivered
             }
+            this.geo={
+                latitude,
+                longitude
+            }
+            this.model=createResponse;
             return true
         }
     }
@@ -88,14 +121,20 @@ export class UserGetById extends User {
         
         let findResponse = await Users.findOne({where:{uid:this.uid}});
         if(!findResponse) return false;
-        this.name=findResponse.dataValues.name;
-        this.rating=findResponse.dataValues.rating;
-        this.token=findResponse.dataValues.token;
-        this.reg_date=findResponse.dataValues.reg_date;
+        let {rating, token, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude} = findResponse.dataValues;
+        this.name=name;
+        this.rating=rating;
+        this.token=token;
+        this.reg_date=reg_date;
         this.pkg={
-            sent:findResponse.dataValues.pkg_sent,
-            delivered:findResponse.dataValues.pkg_delivered
+            sent:pkg_sent,
+            delivered:pkg_delivered
         }
+        this.geo={
+            latitude,
+            longitude
+        }
+        this.model=findResponse;
         return true
     }
 }
@@ -110,14 +149,20 @@ export class UserGetByToken extends User {
         
         let findResponse = await Users.findOne({where:{token:this.token}});
         if(!findResponse) return false;
-        this.name=findResponse.dataValues.name;
-        this.rating=findResponse.dataValues.rating;
-        this.token=findResponse.dataValues.token;
-        this.reg_date=findResponse.dataValues.reg_date;
+        let {rating, token, name, reg_date, pkg_sent, pkg_delivered, latitude, longitude} = findResponse.dataValues;
+        this.name=name;
+        this.rating=rating;
+        this.token=token;
+        this.reg_date=reg_date;
         this.pkg={
-            sent:findResponse.dataValues.pkg_sent,
-            delivered:findResponse.dataValues.pkg_delivered
+            sent:pkg_sent,
+            delivered:pkg_delivered
         }
+        this.geo={
+            latitude,
+            longitude
+        }
+        this.model=findResponse;
         return true
     }
 }

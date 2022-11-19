@@ -22,6 +22,12 @@ export default (s:Sequelize,modelName:string)=>s.define(modelName,{
     },
     pkg_delivered: { // Доставленных посылок
         type: DataTypes.INTEGER
+    },
+    latitude:{
+        type: DataTypes.FLOAT
+    },
+    longitude:{
+        type: DataTypes.FLOAT
     }
 }, {
     

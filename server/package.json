@@ -11,6 +11,7 @@
   "author": "Ikysu",
   "license": "MIT",
   "dependencies": {
+    "@fastify/cors": "^8.2.0",
     "@types/node": "^18.11.9",
     "@types/uuid": "^8.3.4",
     "fastify": "^4.10.0",

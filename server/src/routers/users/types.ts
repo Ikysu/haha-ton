@@ -8,6 +8,10 @@ export type UserProfile = {
     pkg: {
         sent: number;
         delivered: number;
+    },
+    geo:{
+        latitude:number;
+        longitude:number;
     }
 }
 

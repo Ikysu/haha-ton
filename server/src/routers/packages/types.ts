@@ -12,6 +12,14 @@ export type PackageCreateData = {
     info:PackageInfo; // Инфо о самой посылке (Ниже)
     db:Sequelize;
     rating: number;
+    start:{
+        latitude:number;
+        longitude:number;
+    },
+    end:{
+        latitude:number;
+        longitude:number;
+    }
 }
 
 export type PackageInfo = {
@@ -36,6 +44,14 @@ export type PackageObject = {
     info: PackageInfo;
     status: PackageStatus;
     rating:number;
+    start:{
+        latitude:number;
+        longitude:number;
+    },
+    end:{
+        latitude:number;
+        longitude:number;
+    }
 }
 
 export interface IPackage extends PackageObject{
