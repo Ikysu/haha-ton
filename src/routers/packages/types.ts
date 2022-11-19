@@ -60,12 +60,12 @@ export interface IPackage extends PackageObject{
 }
 
 export type PackageStatus = {
-    type:"idle" | "active" | "wait" | "delivered" | "canceled";
+    type:"idle" | "active" | "delivered" | "canceled";
     courier_uid: null | string;
 }
 
 export type PackageStatusObject = {
-    type:"idle" | "active" | "wait" | "delivered" | "canceled";
+    type:"idle" | "active" | "delivered" | "canceled";
     courier: null | UserProfile;
 }
 

@@ -31,7 +31,7 @@ type Req = FastifyRequest<{
 
 export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
 
-    // TODO: Сделать проверку входных данных и существование пользователя
+    // TODO: Сделать проверку входных данных и существование пользователя, а так же на наличие активных посылок как в take
 
     let resUsr = new UserGetByToken({
         db,

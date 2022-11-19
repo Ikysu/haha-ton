@@ -31,6 +31,30 @@ class Package implements IPackage {
         return false;
     }
 
+    async setCourier(uid: string): Promise<any | boolean> {
+        if(this.status.type=="idle"&&this.status.courier_uid==null){
+            let { Packages } = this.db.models;
+            let resPkg = await Packages.findAll({where:{status:{type:"active"},$or:[
+                {
+                    sender_uid:uid
+                },
+                {
+                    recipient_uid:uid
+                },
+                {
+                    status:{courier_uid:uid}
+                },
+            ]}})
+            if(resPkg.length==0){
+                return await this.getInfo();
+            }else{
+                return false
+            }
+        }else{
+            return false
+        }
+    }
+
     async getInfo(): Promise<any> {
         var out = {
             uid:this.uid,

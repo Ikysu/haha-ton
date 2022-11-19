@@ -6,7 +6,7 @@ let rooms = {
 }
 
 export function connection(socket: Socket, db: Sequelize) {
-    socket.on("connect", (room_id)=>{
-        console.log(room_id)
+    socket.on("room-connect", (data)=>{
+        console.log(data)
     })
 }
