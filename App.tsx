@@ -1,74 +1,60 @@
-import { StatusBar } from 'expo-status-bar';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
-
-import useCachedResources from './hooks/useCachedResources';
-import useColorScheme from './hooks/useColorScheme';
-import Navigation from './navigation';
-
+import 'expo-dev-client';
+import React, { useCallback, useEffect, useState } from 'react';
+import { LogBox } from 'react-native';
+import * as SplashScreen from 'expo-splash-screen';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Crypto from 'expo-crypto';
 import { osBuildFingerprint } from 'expo-device';
-import React from 'react';
-import { API, UserService } from './lib/api.service';
-import { RecoilRoot } from 'recoil';
-import RecoilNexus, { setRecoil } from 'recoil-nexus';
 
-import * as Notifications from 'expo-notifications';
-import * as Location from 'expo-location';
+import { AppRoot } from './src/screens';
+import {
+  configureDesignSystem,
+  getNavigationTheme,
+  getStatusBarBGColor,
+  getStatusBarStyle,
+} from './src/utils/designSystem';
+import { hydrateStores } from './src/stores';
+import { initServices, services } from './src/services';
+import { SSProvider } from './src/utils/providers';
+import { StatusBar } from 'expo-status-bar';
+import { useAppearance } from './src/utils/hooks';
 
-import { GeoAtom } from './store/geo.atom';
+LogBox.ignoreLogs(['Require']);
 
-Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
-});
+export default (): JSX.Element => {
+  useAppearance();
+  const [ready, setReady] = useState(false);
 
-export default function App() {
-  const isLoadingComplete = useCachedResources();
-  const colorScheme = useColorScheme();
+  const start = useCallback(async () => {
+    await SplashScreen.preventAutoHideAsync();
 
-  React.useEffect(() => {
-    Notifications.getExpoPushTokenAsync().then(console.log);
+    await hydrateStores();
+    configureDesignSystem();
+    await initServices();
 
-    const login = async () => {
-      const token = await Crypto.digestStringAsync(
-        Crypto.CryptoDigestAlgorithm.SHA256,
-        osBuildFingerprint || 'IOS FUCK YOU',
-      );
-      API.login(token, 'DamirLut');
-    };
+    const token = await Crypto.digestStringAsync(
+      Crypto.CryptoDigestAlgorithm.SHA256,
+      osBuildFingerprint || 'IOS FUCK YOU',
+    );
+    services.api.user.login(token, 'DamirLut');
 
-    const updateGeo = async () => {
-      let location = await Location.getCurrentPositionAsync({});
-      setRecoil(GeoAtom, {
-        longitude: location.coords.longitude || 0,
-        latitude: location.coords.latitude || 0,
-      });
-
-      UserService.updateGeo(location.coords.longitude, location.coords.latitude);
-    };
-    login();
-
-    const interval = setInterval(updateGeo, 5000);
-
-    return () => {
-      clearInterval(interval);
-    };
+    setReady(true);
+    await SplashScreen.hideAsync();
   }, []);
 
-  if (!isLoadingComplete) {
-    return null;
-  } else {
-    return (
-      <RecoilRoot>
-        <RecoilNexus />
-        <SafeAreaProvider>
-          <Navigation colorScheme={colorScheme} />
-          <StatusBar />
-        </SafeAreaProvider>
-      </RecoilRoot>
-    );
+  useEffect(() => {
+    start();
+  }, [start]);
+
+  if (!ready) {
+    return <></>;
   }
-}
+  return (
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SSProvider>
+        <StatusBar style={getStatusBarStyle()} backgroundColor={getStatusBarBGColor()} />
+        <AppRoot navigationContainerProps={{ theme: getNavigationTheme() }} />
+      </SSProvider>
+    </GestureHandlerRootView>
+  );
+};
