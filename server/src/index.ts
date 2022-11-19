@@ -1,8 +1,13 @@
 import {readFileSync, readdirSync} from "fs";
 import { Sequelize } from 'sequelize';
 import Fastify from "fastify";
+import fastifySocket from 'fastify-socket.io'
 
 const settings = JSON.parse(readFileSync("settings.json", "utf-8"));
+
+
+
+// Sequelize
 
 const reconnectOptions = {
     max_retries: 999,
@@ -10,10 +15,6 @@ const reconnectOptions = {
         console.log("[DATABASE] Connection lost, trying to reconnect ("+count+")");
     }
 };
-
-
-
-// Sequelize
 
 const sequelize = new Sequelize({
     ...settings.db,
@@ -32,6 +33,8 @@ readdirSync("./src/database").forEach(async model=>{
 
 const fastify = Fastify();
 
+fastify.register(fastifySocket)
+
 readdirSync("./src/routers").forEach(route=>{
     readdirSync(`./src/routers/${route}`).forEach(async method=>{
         let methodName = method.replace(/\.[^.]*$/, "");
@@ -47,6 +50,14 @@ fastify.ready(async (err)=>{
     await sequelize.authenticate();
     await sequelize.sync({
         force:true
+    })
+
+
+
+    let soc = await import(`./chat`);
+    Object.getOwnPropertyNames(soc).filter(e=>e[0]!="_").forEach(event=>{
+        let socScript = soc[event as keyof typeof soc];
+        fastify.io.on(event, (socket)=>socScript(socket,sequelize))
     })
     console.log(fastify.printRoutes());
 })
