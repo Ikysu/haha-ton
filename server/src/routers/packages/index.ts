@@ -47,10 +47,10 @@ class Package implements IPackage {
                 db:this.db,
                 uid:this.status.courier_uid
             })
-            if(await response.init()&&response) {
+            if(await response.init()) {
                 out.status={
                     type:this.status.type,
-                    //@ts-ignore Пошло оно нахуй
+                    //@ts-ignore Не бей меня
                     courier:response.getProfile()
                 }
             }

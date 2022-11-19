@@ -1,14 +1,52 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Sequelize } from "sequelize";
+import { PackageGet } from ".";
 
 
-type Req = FastifyRequest<{
+export default async function get (req: FastifyRequest, reply: FastifyReply, db: Sequelize) {
+
+
+    // TODO: Отправлять лишь близжайшие посылки (сейчас отправляются все)
     
-}>
+    let { Packages } = db.models;
 
-export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
-    reply.send({ok:false})
+    let response = await Packages.findAll()
+    
+    let out:any[]=response.map(e=>{
+        let { uid, sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude } = e.dataValues
+        return {
+            uid,
+            sender_uid,
+            recipient_uid,
+            rating,
+            info:{
+                sachet:info_sachet,
+                fragile:info_fragile,
+                weight:info_weight,
+                width:info_width,
+                height:info_height,
+                length:info_length
+            },
+            status:{
+                type:status,
+                courier_uid
+            },
+            start:{
+                latitude:start_latitude,
+                longitude:start_longitude
+            },
+            end:{
+                latitude:end_latitude,
+                longitude:end_longitude
+            }
+        }
+    })
+
+    console.log(out)
+    
+    reply.send({ok:true,data:out})
     
 }
+
 
 
