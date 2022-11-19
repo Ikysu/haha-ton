@@ -14,10 +14,11 @@ import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import ModalScreen from '../screens/ModalScreen';
 import NotFoundScreen from '../screens/NotFoundScreen';
-import TabOneScreen from '../screens/TabOneScreen';
-import TabTwoScreen from '../screens/TabTwoScreen';
+import MapScreen from '../screens/MapScreen';
+import SendScreen from '../screens/SendScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import ProfileScreen from '../screens/ProfileScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
   return (
@@ -58,16 +59,16 @@ function BottomTabNavigator() {
 
   return (
     <BottomTab.Navigator
-      initialRouteName="TabOne"
+      initialRouteName="Map"
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint,
       }}>
       <BottomTab.Screen
-        name="TabOne"
-        component={TabOneScreen}
-        options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
-          title: 'Tab One',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+        name="Map"
+        component={MapScreen}
+        options={({ navigation }: RootTabScreenProps<'Map'>) => ({
+          title: 'Заказы',
+          tabBarIcon: ({ color }) => <TabBarIcon name="map" color={color} />,
           headerRight: () => (
             <Pressable
               onPress={() => navigation.navigate('Modal')}
@@ -85,11 +86,27 @@ function BottomTabNavigator() {
         })}
       />
       <BottomTab.Screen
-        name="TabTwo"
-        component={TabTwoScreen}
+        name="Send"
+        component={SendScreen}
         options={{
-          title: 'Tab Two',
-          tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+          title: 'Отправить',
+          tabBarIcon: ({ color }) => <TabBarIcon name="send" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="List"
+        component={SendScreen}
+        options={{
+          title: 'Мои доставки',
+          tabBarIcon: ({ color }) => <TabBarIcon name="list" color={color} />,
+        }}
+      />
+      <BottomTab.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{
+          title: 'Профиль',
+          tabBarIcon: ({ color }) => <TabBarIcon name="user-circle" color={color} />,
         }}
       />
     </BottomTab.Navigator>
