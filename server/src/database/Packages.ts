@@ -16,6 +16,9 @@ export default (s:Sequelize,modelName:string)=>s.define(modelName,{
     info_fragile:{
         type: DataTypes.BOOLEAN
     },
+    info_weight:{
+        type: DataTypes.INTEGER
+    },
     info_width:{
         type: DataTypes.FLOAT
     },

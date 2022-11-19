@@ -20,6 +20,7 @@ export type PackageInfo = {
     width: number; // Ширина посылки
     height: number; // Высота посылки
     length: number; // Длинна посылки
+    weight: number; // Вес
 }
 
 export type GeoPos = {
@@ -43,12 +44,12 @@ export interface IPackage extends PackageObject{
 }
 
 export type PackageStatus = {
-    type:"idle" | "active" | "wait" | "delivered";
+    type:"idle" | "active" | "wait" | "delivered" | "canceled";
     courier_uid: null | string;
 }
 
 export type PackageStatusObject = {
-    type:"idle" | "active" | "wait" | "delivered";
+    type:"idle" | "active" | "wait" | "delivered" | "canceled";
     courier: null | UserProfile;
 }
 

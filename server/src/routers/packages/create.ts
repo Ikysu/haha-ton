@@ -24,7 +24,7 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
     let res = new PackageCreate({
         db,
         sender_uid:req.body.sender_uid,
-        recipient_uid:req.body.recipient_uid,
+        recipient_uid:req.body.recipient_id,
         info:req.body.info,
         rating:req.body.rating
     })

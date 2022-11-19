@@ -31,8 +31,8 @@ class Package implements IPackage {
         return false;
     }
 
-    getInfo(): PackageObject {
-        return {
+    async getInfo(): Promise<any> {
+        var out = {
             uid:this.uid,
             sender_uid:this.sender_uid,
             recipient_uid:this.recipient_uid,
@@ -40,6 +40,20 @@ class Package implements IPackage {
             status:this.status,
             rating:this.rating
         }
+        if(this.status.courier_uid){
+            let response = new UserGet({
+                db:this.db,
+                uid:this.status.courier_uid
+            })
+            if(await response.init()&&response) {
+                out.status={
+                    type:this.status.type,
+                    //@ts-ignore Пошло оно нахуй
+                    courier:response.getProfile()
+                }
+            }
+        }
+        return out
     }
 
     async getStatus(): Promise<PackageStatusObject | boolean> {
@@ -48,7 +62,7 @@ class Package implements IPackage {
                 db:this.db,
                 uid:this.status.courier_uid
             })
-            if(!response) return response;
+            if(!await response.init()||!response) return false;
             return {
                 type:this.status.type,
                 courier:response.getProfile()
@@ -73,6 +87,7 @@ export class PackageGet extends Package {
         this.info={
             sachet:response.dataValues.info_sachet,
             fragile:response.dataValues.info_fragile,
+            weight:response.dataValues.info_weight,
             width:response.dataValues.info_width,
             height:response.dataValues.info_height,
             length:response.dataValues.info_length
@@ -111,6 +126,7 @@ export class PackageCreate extends Package {
             info_width:this.info.width,
             info_height:this.info.height,
             info_length:this.info.length,
+            info_weight:this.info.weight,
             status:this.status.type,
             courier_uid:this.status.courier_uid,
             rating:this.rating
