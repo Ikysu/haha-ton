@@ -37,6 +37,7 @@ export class PackageApi {
     const json: ServerResponse<PackageObject[]> = await resp.json();
 
     if (json.ok) {
+      console.log(json);
       return json.data;
     }
   };
@@ -49,6 +50,8 @@ export class PackageApi {
     });
     const json: ServerResponse<PackageObject> = await resp.json();
 
+    console.log(json);
+
     if (json.ok) {
       return json.data;
     }
@@ -57,6 +60,7 @@ export class PackageApi {
   private get headers() {
     return {
       authorization: stores.user.token,
+      'Content-Type': 'application/json',
     };
   }
 }

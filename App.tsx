@@ -4,7 +4,7 @@ import { LogBox } from 'react-native';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import * as Crypto from 'expo-crypto';
-import { osBuildFingerprint } from 'expo-device';
+import * as Device from 'expo-device';
 
 import { AppRoot } from './src/screens';
 import {
@@ -34,9 +34,9 @@ export default (): JSX.Element => {
 
     const token = await Crypto.digestStringAsync(
       Crypto.CryptoDigestAlgorithm.SHA256,
-      osBuildFingerprint || 'IOS FUCK YOU',
+      Device.osBuildFingerprint || 'IOS FUCK YOU',
     );
-    services.api.user.login(token, 'DamirLut');
+    services.api.user.login(token, Device.deviceName as string);
 
     setReady(true);
     await SplashScreen.hideAsync();

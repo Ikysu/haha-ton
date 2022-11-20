@@ -1,12 +1,12 @@
-import React, {useEffect, useState} from 'react';
-import {ScrollView} from 'react-native';
-import {Text, View, SegmentedControl, Colors} from 'react-native-ui-lib';
-import {observer} from 'mobx-react';
-import {useNavigation} from '@react-navigation/native';
-import {NavioScreen} from 'rn-navio';
+import React, { useEffect, useState } from 'react';
+import { ScrollView } from 'react-native';
+import { Text, View, SegmentedControl, Colors } from 'react-native-ui-lib';
+import { observer } from 'mobx-react';
+import { useNavigation } from '@react-navigation/native';
+import { NavioScreen } from 'rn-navio';
 
-import {Section} from '../components/section';
-import {Row} from '../components/row';
+import { Section } from '../components/section';
+import { Row } from '../components/row';
 import {
   appearances,
   appearancesUI,
@@ -15,15 +15,15 @@ import {
   languagesUI,
   languageUIToInternal,
 } from '../utils/types/enums';
-import {useAppearance} from '../utils/hooks';
-import {useStores} from '../stores';
-import {HeaderButton} from '../components/button';
-import {services} from '../services';
+import { useAppearance } from '../utils/hooks';
+import { useStores } from '../stores';
+import { HeaderButton } from '../components/button';
+import { services } from '../services';
 
 export const Settings: NavioScreen = observer(({}) => {
   useAppearance();
   const navigation = useNavigation();
-  const {ui} = useStores();
+  const { ui, user } = useStores();
 
   return (
     <View flex bg-bgColor>
@@ -35,9 +35,8 @@ export const Settings: NavioScreen = observer(({}) => {
                 <Text textColor text60R>
                   Appearance
                 </Text>
+                <Text textColor>Token: {user.token}</Text>
               </View>
-
-
             </Row>
           </View>
 
@@ -48,8 +47,6 @@ export const Settings: NavioScreen = observer(({}) => {
                   Language
                 </Text>
               </View>
-
-      
             </Row>
           </View>
         </Section>

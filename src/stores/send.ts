@@ -53,6 +53,10 @@ export class SendStore implements IStore {
     this.set('data', { ...this.data, [key]: value });
   }
 
+  setInfo(key: keyof typeof this.data.info, value: any) {
+    this.setData('info', { ...this.data.info, [key]: value });
+  }
+
   // Hydration
   hydrate = async (): PVoid => {
     await hydrateStore(this);

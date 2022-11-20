@@ -6,13 +6,14 @@ export class UserStore implements IStore {
   token = '';
   profile!: UserProfile;
   stores: PackageObject[] = [];
+  activeStores: PackageObject[] = [];
 
   constructor() {
     makeAutoObservable(this);
 
     makePersistable(this, {
       name: UserStore.name,
-      properties: ['token', 'profile', 'stores'],
+      properties: ['token', 'profile', 'stores', 'activeStores'],
     });
   }
 

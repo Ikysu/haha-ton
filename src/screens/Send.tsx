@@ -23,7 +23,6 @@ export const Send: NavioScreen<Props> = observer(({ type = 'push' }) => {
   const { t, navio, api } = useServices();
 
   const { send } = useStores();
-  const [info, setInfo] = React.useState(send.data);
 
   // Start
   useEffect(() => {
@@ -36,13 +35,9 @@ export const Send: NavioScreen<Props> = observer(({ type = 'push' }) => {
   };
 
   const createPackage = () => {
-    send.set('data', info);
-    api.package.create(info);
+    api.package.create(send.data).then(console.log).catch(console.warn);
     send.set('data', { ...send.defaultData });
   };
-
-  const update = (key: string, value: any) => setInfo((prev) => ({ ...prev, [key]: value }));
-  const updateInfo = (key: string, value: any) => update('info', { ...info.info, [key]: value });
 
   // UI Methods
 
@@ -60,7 +55,7 @@ export const Send: NavioScreen<Props> = observer(({ type = 'push' }) => {
         floatingPlaceholder
         color={Colors.$textDefault}
         placeholder={props.placeholder}
-        value={info[props.type].name}
+        value={send.data[props.type].name}
         editable={false}
       />
       <Icon
@@ -80,46 +75,46 @@ export const Send: NavioScreen<Props> = observer(({ type = 'push' }) => {
         <Search placeholder="Куда" type="end" />
         <Input
           placeholder="Получатель"
-          value={info.recipient_uid}
-          onChangeText={(text: string) => update('recipient_uid', text)}
+          value={send.data.recipient_uid}
+          onChangeText={(text: string) => send.setData('recipient_uid', text)}
         />
         <Input
           placeholder="Вес"
-          value={info.info.weight}
-          onChangeText={(text: string) => updateInfo('weight', +text)}
+          value={send.data.info.weight}
+          onChangeText={(text: string) => send.setInfo('weight', +text)}
         />
         <View flex style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
           <Input
             style={{ width: '30%' }}
             placeholder="Ширина"
-            value={info.info.width}
-            onChangeText={(text: string) => updateInfo('width', +text)}
+            value={send.data.info.width}
+            onChangeText={(text: string) => send.setInfo('width', +text)}
           />
           <Input
             style={{ width: '30%' }}
             placeholder="Длина"
-            value={info.info.length}
-            onChangeText={(text: string) => updateInfo('length', +text)}
+            value={send.data.info.length}
+            onChangeText={(text: string) => send.setInfo('length', +text)}
           />
           <Input
             style={{ width: '30%' }}
             placeholder="Высота"
-            value={info.info.height}
-            onChangeText={(text: string) => updateInfo('height', +text)}
+            value={send.data.info.height}
+            onChangeText={(text: string) => send.setInfo('height', +text)}
           />
         </View>
         <View flex style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
           <Checkbox
             color={Colors.primary}
             label={'В пакете'}
-            value={info.info.sachet}
-            onValueChange={(text: string) => updateInfo('sachet', +text)}
+            value={send.data.info.sachet}
+            onValueChange={(text: string) => send.setInfo('sachet', +text)}
           />
           <Checkbox
             color={Colors.primary}
             label={'Хрупкое'}
-            value={info.info.fragile}
-            onValueChange={(text: string) => updateInfo('fragile', +text)}
+            value={send.data.info.fragile}
+            onValueChange={(text: string) => send.setInfo('fragile', +text)}
           />
         </View>
         <Button bg-primary enableShadow marginT-36 onPress={createPackage}>
