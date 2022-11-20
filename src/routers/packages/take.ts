@@ -30,20 +30,6 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize, sen
                 reply.send({ok:true, data:pkg})
 
 
-                // TODO: Переделать на UserGetById
-                let {Users} = db.models;
-                Users.findOne({where:{uid:resPkg.recipient_uid}}).then(recipient=>{
-                    Users.findOne({where:{uid:resPkg.status.courier_uid}}).then(courier=>{
-                        //@ts-ignore
-                        sendPush({
-                            to:[recipient?.dataValues.push_token, resUsr?.push_token],
-                            title:"Курьер!",
-                            body:`${courier?.dataValues.name} отозвался(ась) отвезти вашу посылку`,
-                            data:{}
-                        })
-                    })
-                })
-
 
             }else{
                 reply.send({ok:false, error:"Package error"})

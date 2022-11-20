@@ -49,14 +49,6 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize, sen
         })
         if(await resPkg.init()){
             reply.send({ok:true, data:await resPkg.getInfo()})
-
-            //@ts-ignore
-            sendPush({
-                to:resRec.push_token,
-                title:"Вам отправили посылку!",
-                body:`${resUsr.name} отправил(а) вам посылку! Перейдите в приложение, чтобы отследить её!`,
-                data:{}
-            })
         }else{
             reply.send({ok:false, error:"Package not found"})
         }
