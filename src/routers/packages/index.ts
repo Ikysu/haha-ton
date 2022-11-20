@@ -1,5 +1,5 @@
 
-import { Sequelize } from "sequelize";
+import { Model, Sequelize } from "sequelize";
 import { 
     PackageRestoreData,
     PackageCreateData,
@@ -25,6 +25,8 @@ class Package implements IPackage {
     end!: GeoPos;
     comment!: string;
 
+    model!: Model;
+
     constructor(db: Sequelize) {
         this.db=db;
     }
@@ -34,21 +36,28 @@ class Package implements IPackage {
         return false;
     }
 
+    async done() {
+        if(this.status.type=="active"){
+            this.status.type="delivered"
+            this.model.update({status:"delivered"})
+            return await this.getInfo();
+        }else{
+            return false
+        }
+    }
+
     async setCourier(uid: string): Promise<any | boolean> {
-        if(this.status.type=="idle"&&this.status.courier_uid==null){
-            let { Packages } = this.db.models;
-            let resPkg = await Packages.findAll({where:{status:{type:"active"},$or:[
-                {
-                    sender_uid:uid
-                },
-                {
-                    recipient_uid:uid
-                },
-                {
-                    status:{courier_uid:uid}
-                },
-            ]}})
-            if(resPkg.length==0){
+        let usr = new UserGetById({
+            db:this.db,
+            uid
+        })
+        if(await usr.init()&&await usr.checkUserIsNotActive()){
+            if(this.status.type=="idle"&&this.status.courier_uid==null){
+                this.status={
+                    type:"active",
+                    courier_uid:uid
+                }
+                this.model.update({status:"active",courier_uid:uid})
                 return await this.getInfo();
             }else{
                 return false
@@ -120,7 +129,9 @@ export class PackageGet extends Package {
             latitude:end_latitude,
             longitude:end_longitude
         }
-        this.comment=comment
+        this.comment=comment;
+
+        this.model=response
 
         return true;
     }
@@ -164,6 +175,7 @@ export class PackageCreate extends Package {
             comment:this.comment
         });
         this.uid=response.dataValues.uid;
+        this.model=response;
         return true;
     }
 }

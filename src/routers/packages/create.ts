@@ -1,6 +1,6 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { Sequelize } from "sequelize";
-import { UserGetByToken } from "../users";
+import { UserGetById, UserGetByToken } from "../users";
 import { PackageCreate } from "./index";
 import { GeoPos, PackageInfo } from "./types";
 
@@ -26,7 +26,11 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize, sen
         db,
         token:req.headers.authorization
     })
-    if(await resUsr.init()){
+    let resRec = new UserGetById({
+        db,
+        uid:req.body.recipient_uid
+    })
+    if(await resUsr.init()&&await resRec.init()&&await resUsr.checkUserIsNotActive()&&await resRec.checkUserIsNotActive()){
         let resPkg = new PackageCreate({
             db,
             sender_uid:resUsr.uid,
@@ -46,15 +50,12 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize, sen
         if(await resPkg.init()){
             reply.send({ok:true, data:await resPkg.getInfo()})
 
-            let {Users} = db.models;
-            Users.findOne({where:{uid:resPkg.recipient_uid}}).then(user=>{
-                //@ts-ignore
-                sendPush({
-                    to:user?.dataValues.push_token,
-                    title:"Вам отправили посылку!",
-                    body:`${resUsr.name} отправил(а) вам посылку! Перейдите в приложение, чтобы отследить её!`,
-                    data:{}
-                })
+            //@ts-ignore
+            sendPush({
+                to:resRec.push_token,
+                title:"Вам отправили посылку!",
+                body:`${resUsr.name} отправил(а) вам посылку! Перейдите в приложение, чтобы отследить её!`,
+                data:{}
             })
         }else{
             reply.send({ok:false, error:"Package not found"})

@@ -1,6 +1,6 @@
 import { throws } from "assert";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { Model, Sequelize } from "sequelize";
+import { Model, Sequelize, Op } from "sequelize";
 import { IUser, UserCreateData, UserGetByIdData, UserGetByTokenData, UserProfile } from "./types";
 
 // TODO: Сделать 2 отдельных класса и в целом переписать
@@ -55,6 +55,38 @@ class User implements IUser {
             }
         }
         return this.getProfile
+    }
+
+    async checkUserIsNotActive(): Promise<boolean> {
+        let { Packages } = this.db.models;
+        
+        let response = await Packages.findAll({
+            where:{
+                [Op.or]:[
+                    {
+                        sender_uid:this.uid
+                    },
+                    {
+                        recipient_uid:this.uid
+                    },
+                    {
+                        courier_uid:this.uid
+                    },
+                ],
+                [Op.not]:[
+                    {
+                        status:"canceled"
+                    },
+                    {
+                        status:"delivered"
+                    }
+                ]
+            }
+        })
+
+        console.log(response.length)
+
+        return response.length==0
     }
 }
 
