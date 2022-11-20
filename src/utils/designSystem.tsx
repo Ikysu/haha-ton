@@ -14,7 +14,7 @@ import { Appearance } from './types/enums';
 // =============
 
 const colors = {
-  primary: '#5383b8', // blue
+  primary: '#2aa2dc', // blue
   secondary: '#469c57', // green
   accent: '#fed330', // yellow
   _black: Colors.rgba(20, 20, 20, 1),

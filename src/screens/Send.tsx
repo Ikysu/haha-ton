@@ -1,15 +1,17 @@
 import React, { useEffect } from 'react';
 import { ScrollView } from 'react-native';
-import { TextField, View } from 'react-native-ui-lib';
+import { Button, Checkbox, Colors, Text, TextField, View } from 'react-native-ui-lib';
 import { observer } from 'mobx-react';
 import { useNavigation } from '@react-navigation/native';
 import { NavioScreen } from 'rn-navio';
 
 import { services, useServices } from '../services';
 // import {useStores} from '../stores';
-import { Section } from '../components/section';
-import { BButton } from '../components/button';
+
 import { useAppearance } from '../utils/hooks';
+import { CreatePackageBody } from '../services/api/type';
+import { Icon } from '../components/icon';
+import { useStores } from '../stores';
 
 export type Props = {
   type?: 'push';
@@ -18,18 +20,10 @@ export type Props = {
 export const Send: NavioScreen<Props> = observer(({ type = 'push' }) => {
   useAppearance(); // for Dark Mode
   const navigation = useNavigation();
-  const { t, navio } = useServices();
-  // const {ui} = useStores();
+  const { t, navio, api } = useServices();
 
-  // State
-
-  // Methods
-  const push = () => navio.push('Example', { type: 'push' });
-  const pushStack = () => navio.pushStack('ExampleStack');
-  const jumpTo = () => navio.jumpTo('MapTab');
-  const show = () => navio.show('ExampleModal');
-  const setRoot = () => navio.setRoot('Tabs');
-  const goBack = () => navio.pop();
+  const { send } = useStores();
+  const [info, setInfo] = React.useState(send.data);
 
   // Start
   useEffect(() => {
@@ -41,37 +35,96 @@ export const Send: NavioScreen<Props> = observer(({ type = 'push' }) => {
     navigation.setOptions({});
   };
 
+  const createPackage = () => {
+    send.set('data', info);
+    api.package.create(info);
+    send.set('data', { ...send.defaultData });
+  };
+
+  const update = (key: string, value: any) => setInfo((prev) => ({ ...prev, [key]: value }));
+  const updateInfo = (key: string, value: any) => update('info', { ...info.info, [key]: value });
+
   // UI Methods
+
+  const Search = (props: { placeholder: string; type: 'start' | 'end' }) => (
+    <View
+      style={{
+        flex: 1,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+      }}>
+      <TextField
+        style={{ width: '85%' }}
+        text70
+        floatingPlaceholder
+        color={Colors.$textDefault}
+        placeholder={props.placeholder}
+        value={info[props.type].name}
+        editable={false}
+      />
+      <Icon
+        name={'search'}
+        onPress={() => {
+          navio.show('ChooseLocation');
+          send.current = props.type;
+        }}
+      />
+    </View>
+  );
 
   return (
     <View flex bg-bgColor padding-5>
       <ScrollView contentInsetAdjustmentBehavior="always">
-        <TextField text70 floatingPlaceholder placeholder="Откуда" floatOnFocus />
-        <TextField text70 floatingPlaceholder placeholder="Куда" floatOnFocus />
-        <TextField text70 floatingPlaceholder placeholder="Получатель" floatOnFocus />
+        <Search placeholder="Откуда" type="start" />
+        <Search placeholder="Куда" type="end" />
+        <Input
+          placeholder="Получатель"
+          value={info.recipient_uid}
+          onChangeText={(text: string) => update('recipient_uid', text)}
+        />
+        <Input
+          placeholder="Вес"
+          value={info.info.weight}
+          onChangeText={(text: string) => updateInfo('weight', +text)}
+        />
         <View flex style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <TextField
+          <Input
             style={{ width: '30%' }}
-            text70
-            floatingPlaceholder
-            placeholder="Вес"
-            floatOnFocus
+            placeholder="Ширина"
+            value={info.info.width}
+            onChangeText={(text: string) => updateInfo('width', +text)}
           />
-          <TextField
+          <Input
             style={{ width: '30%' }}
-            text70
-            floatingPlaceholder
             placeholder="Длина"
-            floatOnFocus
+            value={info.info.length}
+            onChangeText={(text: string) => updateInfo('length', +text)}
           />
-          <TextField
+          <Input
             style={{ width: '30%' }}
-            text70
-            floatingPlaceholder
             placeholder="Высота"
-            floatOnFocus
+            value={info.info.height}
+            onChangeText={(text: string) => updateInfo('height', +text)}
           />
         </View>
+        <View flex style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+          <Checkbox
+            color={Colors.primary}
+            label={'В пакете'}
+            value={info.info.sachet}
+            onValueChange={(text: string) => updateInfo('sachet', +text)}
+          />
+          <Checkbox
+            color={Colors.primary}
+            label={'Хрупкое'}
+            value={info.info.fragile}
+            onValueChange={(text: string) => updateInfo('fragile', +text)}
+          />
+        </View>
+        <Button bg-primary enableShadow marginT-36 onPress={createPackage}>
+          <Text>Отправить!</Text>
+        </Button>
       </ScrollView>
     </View>
   );
@@ -81,3 +134,10 @@ Send.options = (props) => ({
   headerBackTitleStyle: false,
   title: services.t.do('send.title'),
 });
+
+const Input = (props: {
+  value: any;
+  placeholder: string;
+  onChangeText: (text: string) => void;
+  style?: any;
+}) => <TextField text70 floatingPlaceholder color={Colors.$textDefault} {...props} />;

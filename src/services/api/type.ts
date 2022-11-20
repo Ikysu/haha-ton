@@ -22,14 +22,7 @@ export type UserProfile = {
 
 export type CreatePackageBody = {
   recipient_uid: string;
-  info: {
-    sachet: boolean;
-    fragile: boolean;
-    width: number;
-    height: number;
-    length: number;
-    weight: number;
-  };
+  info: PackageInfo;
   rating: number;
   start: {
     latitude: number;

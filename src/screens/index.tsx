@@ -10,6 +10,7 @@ import { Profile } from './Profile';
 import { Send } from './Send';
 import { List } from './List';
 import { Button } from 'react-native-ui-lib';
+import { ChooseLocation } from './ChooseLocation';
 
 // NAVIO
 export const navio = Navio.build({
@@ -20,13 +21,15 @@ export const navio = Navio.build({
     Example,
     Send,
     List,
+    ChooseLocation,
   },
   stacks: {
     MainStack: ['Main', 'Example'],
     ExampleStack: ['Example'],
-    SendStack: ['Send'],
+    SendStack: ['Send', 'ChooseLocation'],
     ProfileStack: ['Profile', 'Settings'],
-    SettingsStack: ['Settings']
+    SettingsStack: ['Settings'],
+    ChooseLocationStack: ['ChooseLocation'],
   },
   tabs: {
     MapTab: {
@@ -37,7 +40,7 @@ export const navio = Navio.build({
       },
     },
     SendTab: {
-      stack: ['Send'],
+      stack: ['Send', 'ChooseLocation'],
       options: () => ({
         title: 'Отправить',
         tabBarIcon: getTabBarIcon('SendTab'),
@@ -60,6 +63,7 @@ export const navio = Navio.build({
   },
   modals: {
     ExampleModal: 'ExampleStack',
+    ChooseLocation: 'ChooseLocationStack',
   },
   root: 'Tabs',
   hooks: [useAppearance],

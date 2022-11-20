@@ -3,10 +3,12 @@ import React from 'react';
 import './_hydration';
 import { UIStore } from './ui';
 import { UserStore } from './user';
+import { SendStore } from './send';
 
 class Stores {
   ui = new UIStore();
   user = new UserStore();
+  send = new SendStore();
 }
 export const stores = new Stores();
 
