@@ -50,7 +50,8 @@ const reconnectOptions = {
 
 const sequelize = new Sequelize({
     ...settings.db,
-    reconnect: reconnectOptions || true
+    reconnect: reconnectOptions || true,
+    logging:false
 })
 
 readdirSync("./src/database").forEach(async model=>{
@@ -93,9 +94,7 @@ fastify.ready(async (err)=>{
     
     await sequelize.authenticate();
     console.log("[DATABASE] authenticated")
-    await sequelize.sync({
-        force:true
-    })
+    await sequelize.sync()
     console.log("[DATABASE] synced")
 
     let soc = await import(`./chat`);
@@ -106,6 +105,10 @@ fastify.ready(async (err)=>{
     console.log("[SOCKET] installed")
     console.log(fastify.printRoutes());
     log("API Опущен")
+})
+
+fastify.setErrorHandler(function (error, request, reply) {
+    log(new Date().toLocaleTimeString()+" "+error.message)
 })
 
 fastify.listen(settings.fastify)

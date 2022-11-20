@@ -37,7 +37,7 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
             }
         })
         
-        let out:PackageObject[]=response.map(e=>{
+        let out:any[]=response.map(e=>{
             let { uid, sender_uid, recipient_uid, info_sachet, info_fragile, info_weight, info_width, info_height, info_length, status, courier_uid, rating, start_latitude, start_longitude, end_latitude, end_longitude, comment } = e.dataValues
             return {
                 uid,
@@ -57,12 +57,12 @@ export default async function (req: Req, reply: FastifyReply, db: Sequelize) {
                     courier_uid
                 },
                 start:{
-                    latitude:start_latitude,
-                    longitude:start_longitude
+                    latitude:+start_latitude,
+                    longitude:+start_longitude
                 },
                 end:{
-                    latitude:end_latitude,
-                    longitude:end_longitude
+                    latitude:+end_latitude,
+                    longitude:+end_longitude
                 },
                 comment
             }
